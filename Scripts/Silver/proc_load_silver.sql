@@ -1,4 +1,4 @@
---TRANSFORMING THE BRONZE CRM.CUSTOMER INFORMATION
+--TRANSFORMING THE BRONZE CRM_CUSTOMER INFORMATION
 INSERT INTO Silver.crm_cust_info(cst_id,
 cst_key,
 cst_firstname,
@@ -28,7 +28,7 @@ FROM Bronze.crm_cust_info) T
 WHERE flag_last = 1;
 
 
---TRANSFORMING THE BRONZE CRM.PRODUCT INFORMATION
+--TRANSFORMING THE BRONZE CRM_PRODUCT INFORMATION
 
 INSERT INTO silver.crm_prd_info(
 prd_id,
@@ -60,7 +60,7 @@ FROM Bronze.crm_prd_info
 
 select * from silver.crm_prd_info
 
---TRANSFORMING THE BRONZE CRM.SALES_DETAILS INFORMATION
+--TRANSFORMING THE BRONZE CRM_SALES_DETAILS INFORMATION
 
 INSERT INTO silver.crm_sales_details(
 sls_ord_num,
@@ -107,7 +107,7 @@ END AS sls_sales
 FROM Bronze.crm_sales_details;
 
 
---TRANSFORMING THE BRONZE ERP.CUST_AZ12 INFORMATION
+--TRANSFORMING THE BRONZE ERP_CUST_AZ12 INFORMATION
 
 INSERT INTO silver.erp_cust_az12(
 cid,
@@ -126,3 +126,16 @@ CASE
 	ELSE 'n/a'
 END AS gen
 FROM Bronze.erp_cust_az12
+
+--TRANSFORMING THE BRONZE ERP_LOC_A101 INFORMATION
+
+INSERT INTO silver.erp_loc_a101(cid,cntry)
+SELECT 
+REPLACE(cid,'-', '') cid,
+CASE 
+	WHEN UPPER(TRIM(cntry)) IN('US','USA') THEN 'United States'
+	WHEN UPPER(TRIM(cntry)) = 'DE' THEN 'Germany'
+	WHEN cntry = '' OR cntry IS NULL THEN 'n/a'
+ELSE TRIM(cntry)
+END AS cntry
+FROM Bronze.erp_loc_a101
