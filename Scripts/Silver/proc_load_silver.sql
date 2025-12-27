@@ -139,3 +139,18 @@ CASE
 ELSE TRIM(cntry)
 END AS cntry
 FROM Bronze.erp_loc_a101
+
+--TRANSFORMING THE BRONZE ERP_GX_CAT_G1V2 INFORMATION
+
+INSERT INTO silver.erp_px_cat_g1v2(
+id,
+cat,
+subcat,
+maintenance
+)
+SELECT 
+id,
+cat,
+subcat,
+maintenance
+FROM Bronze.erp_px_cat_g1v2
