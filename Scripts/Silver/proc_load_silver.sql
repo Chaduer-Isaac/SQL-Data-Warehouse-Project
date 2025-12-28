@@ -1,4 +1,7 @@
---TRANSFORMING THE BRONZE CRM_CUSTOMER INFORMATION
+--TRANSFORMING THE BRONZE CRM.CUSTOMER INFORMATION
+PRINT '>> Truncating table Silver.crm_cust_info'
+TRUNCATE TABLE Silver.crm_cust_info
+PRINT '>> Inserting date into Silver.crm_cust_info'
 INSERT INTO Silver.crm_cust_info(cst_id,
 cst_key,
 cst_firstname,
@@ -28,8 +31,11 @@ FROM Bronze.crm_cust_info) T
 WHERE flag_last = 1;
 
 
---TRANSFORMING THE BRONZE CRM_PRODUCT INFORMATION
+--TRANSFORMING THE BRONZE CRM.PRODUCT INFORMATION
 
+PRINT '>> Truncating table silver.crm_prd_info'
+TRUNCATE TABLE silver.crm_prd_info
+PRINT '>> Inserting date into silver.crm_prd_info'
 INSERT INTO silver.crm_prd_info(
 prd_id,
 cat_id,
@@ -58,10 +64,11 @@ CAST(LEAD(prd_start_dt) OVER( PARTITION BY prd_key ORDER BY prd_start_dt)-1
 AS DATE) AS prd_end_dt
 FROM Bronze.crm_prd_info
 
-select * from silver.crm_prd_info
+--TRANSFORMING THE BRONZE CRM.SALES_DETAILS INFORMATION
 
---TRANSFORMING THE BRONZE CRM_SALES_DETAILS INFORMATION
-
+PRINT '>> Truncating table silver.crm_sales_details'
+TRUNCATE TABLE silver.crm_sales_details
+PRINT '>> Inserting date into silver.crm_sales_details'
 INSERT INTO silver.crm_sales_details(
 sls_ord_num,
 sls_prd_key,
@@ -77,38 +84,34 @@ SELECT
 sls_ord_num,
 sls_prd_key,
 sls_cust_id,
-
 CASE WHEN sls_order_dt = 0 OR LEN(sls_order_dt) !=8 THEN NULL
 ELSE CAST(CAST(sls_order_dt AS VARCHAR) AS DATE)
 END AS sls_order_dt,
-
 CASE WHEN sls_ship_dt = 0 OR LEN(sls_ship_dt) !=8 THEN NULL
 ELSE CAST(CAST(sls_ship_dt AS VARCHAR) AS DATE)
 END AS sls_ship_dt,
-
 CASE WHEN sls_due_dt = 0 OR LEN(sls_due_dt) !=8 THEN NULL
 ELSE CAST(CAST(sls_due_dt AS VARCHAR) AS DATE)
 END AS sls_due_dt,
-
 CASE WHEN sls_price IS NULL OR sls_price<=0
 THEN sls_sales  / NULLIF(sls_quantity,0)
 ELSE sls_price
 END AS sls_price,
-
 sls_quantity,
-
 CASE 
 WHEN sls_sales IS NULL OR sls_sales <= 0 OR
 sls_sales != sls_quantity * ABS(sls_price)
 THEN sls_quantity * ABS(sls_price)
 ELSE sls_sales
 END AS sls_sales
-
 FROM Bronze.crm_sales_details;
 
 
---TRANSFORMING THE BRONZE ERP_CUST_AZ12 INFORMATION
+--TRANSFORMING THE BRONZE ERP.CUST_AZ12 INFORMATION
 
+PRINT '>> Truncating table silver.erp_cust_az12'
+TRUNCATE TABLE silver.erp_cust_az12
+PRINT '>> Inserting date into silver.erp_cust_az12'
 INSERT INTO silver.erp_cust_az12(
 cid,
 bdate,
@@ -125,10 +128,13 @@ CASE
 	WHEN UPPER(TRIM(gen)) IN ('M', 'FEMALE') THEN 'Female'
 	ELSE 'n/a'
 END AS gen
-FROM Bronze.erp_cust_az12
+FROM Bronze.erp_cust_az12 
 
---TRANSFORMING THE BRONZE ERP_LOC_A101 INFORMATION
+--TRANSFORMING THE BRONZE ERP.LOC_A101 INFORMATION
 
+PRINT '>> Truncating table silver.erp_loc_a101'
+TRUNCATE TABLE silver.erp_loc_a101
+PRINT '>> Inserting date into silver.erp_loc_a101'
 INSERT INTO silver.erp_loc_a101(cid,cntry)
 SELECT 
 REPLACE(cid,'-', '') cid,
@@ -142,6 +148,9 @@ FROM Bronze.erp_loc_a101
 
 --TRANSFORMING THE BRONZE ERP_GX_CAT_G1V2 INFORMATION
 
+PRINT '>> Truncating table silver.erp_px_cat_g1v2'
+TRUNCATE TABLE silver.erp_px_cat_g1v2
+PRINT '>> Inserting date into silver.erp_px_cat_g1v2'
 INSERT INTO silver.erp_px_cat_g1v2(
 id,
 cat,
